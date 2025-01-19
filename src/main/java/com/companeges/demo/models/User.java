@@ -20,6 +20,9 @@ public class User {
     
     @Column(nullable = false, unique = true) // Define como única
     private String email;
+
+    @Column(nullable = false) // Define as características da coluna
+    private String password;
     
     // Getters e Setters
     public Long getId() {
