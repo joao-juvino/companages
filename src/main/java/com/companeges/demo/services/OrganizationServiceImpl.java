@@ -6,12 +6,16 @@ import org.springframework.stereotype.Service;
 
 import com.companeges.demo.dto.OrganizationPostPutRequestDTO;
 import com.companeges.demo.models.Organization;
+import com.companeges.demo.repositories.OrganizationRepository;
 
 @Service
 public class OrganizationServiceImpl implements OrganizationService {
     
     @Autowired
     ModelMapper modelMapper;
+
+    @Autowired
+    OrganizationRepository organizationRepository;
 
     @Override
     public OrganizationPostPutRequestDTO createOrganization(
