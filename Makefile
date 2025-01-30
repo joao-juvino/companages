@@ -5,3 +5,6 @@ run:
 clean:
 	docker compose down
 	mvn clean
+
+test:
+	mvn test
