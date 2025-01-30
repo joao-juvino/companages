@@ -30,6 +30,9 @@ public class Organization {
 
     @OneToMany(mappedBy = "organization", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Position> cargos;
+
+    @OneToMany(mappedBy = "organization", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Member> members;
     
     public Long getId() {
         return this.id;
@@ -49,6 +52,10 @@ public class Organization {
 
     public Long getUserId() {
         return this.user.getId();
+    }
+
+    public List<Member> getMembers() {
+        return this.members;
     }
 
 }
