@@ -1,5 +1,7 @@
 package com.companeges.demo.models;
 
+import com.fasterxml.jackson.annotation.ObjectIdGenerators.StringIdGenerator;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -29,5 +31,17 @@ public class Position {
     @ManyToOne
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
+
+    public Long getId() {
+        return this.id;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public Long getWeight() {
+        return this.weight;
+    }
 
 }
