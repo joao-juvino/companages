@@ -1,5 +1,7 @@
 package com.companeges.demo.services;
 
-public class PositionService {
+import com.companeges.demo.dto.PositionPostPutRequestDTO;
+
+public interface PositionService {
     PositionPostPutRequestDTO createPosition(PositionPostPutRequestDTO positionPostPutRequestDTO);
 }
