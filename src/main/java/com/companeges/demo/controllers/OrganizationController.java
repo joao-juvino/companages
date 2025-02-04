@@ -22,5 +22,12 @@ public class OrganizationController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(organizationService.createOrganization(organizationPostPutRequestDTO));
+    } 
+    
+    @PostMapping
+    public ResponseEntity<?> getOrganizations() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(organizationService.getOrganization());
     }  
 }
