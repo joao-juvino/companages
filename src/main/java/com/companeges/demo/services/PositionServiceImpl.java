@@ -1,5 +1,8 @@
 package com.companeges.demo.services;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +26,15 @@ public class PositionServiceImpl implements PositionService {
         Position position = modelMapper.map(positionPostPutRequestDTO, Position.class);
         positionRepository.save(position);
         return modelMapper.map(position, PositionPostPutRequestDTO.class);
+    }
+
+    @Override
+    public List<PositionPostPutRequestDTO> getPositions() {
+        List<Position> positions = this.positionRepository.findAll();
+
+        return positions.stream()
+                .map(position -> new PositionPostPutRequestDTO(position))
+                .collect(Collectors.toList());
     }
     
 }
