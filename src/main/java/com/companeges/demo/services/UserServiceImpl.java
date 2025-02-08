@@ -1,5 +1,8 @@
 package com.companeges.demo.services;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +25,15 @@ public class UserServiceImpl implements UserService {
         User user = modelMapper.map(userPostPutRequestDTO, User.class);
         userRepository.save(user);
         return modelMapper.map(user, UserPostPutRequestDTO.class);
+    }
+
+    @Override
+    public List<UserPostPutRequestDTO> getUsers() {
+        List<User> users = this.userRepository.findAll();
+
+        return users.stream()
+                .map(user -> new UserPostPutRequestDTO(user))
+                .collect(Collectors.toList());
     }
     
 }
