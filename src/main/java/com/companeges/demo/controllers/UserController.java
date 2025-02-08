@@ -31,6 +31,6 @@ public class UserController {
     public ResponseEntity<?> getUsers() {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(userService.getUser());
+                .body(userService.getUsers());
     }
 }
