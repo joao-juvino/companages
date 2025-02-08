@@ -1,16 +1,19 @@
 package com.companeges.demo.services;
 
 import java.lang.reflect.Member;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.companeges.demo.dto.MemberPostPutDTO;
+import com.companeges.demo.models.User;
 import com.companeges.demo.repositories.MemberRepository;
 
 @Service
-public class MemberServiceImpl {
+public class MemberServiceImpl implements MemberService {
     @Autowired
     ModelMapper modelMapper;
 
@@ -23,5 +26,14 @@ public class MemberServiceImpl {
         memberRepository.save(member);
 
         return modelMapper.map(member, MemberPostPutDTO.class);
+    }
+
+    @Override
+    public List<MemberPostPutDTO> getMembers() {
+        List<Member> members = this.memberRepository.findAll();
+
+        return members.stream()
+                .map(member -> new MemberPostPutDTO(member))
+                .collect(Collectors.toList());
     }
 }

@@ -24,4 +24,11 @@ public class MemberController {
                 .body(memberService.createMember(memberPostPutDTO));
     }
 
+    @PostMapping
+    public ResponseEntity<?> getMembers() {
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(memberService.getMembers());
+    }
+
 }
