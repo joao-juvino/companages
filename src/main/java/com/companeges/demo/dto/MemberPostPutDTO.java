@@ -1,6 +1,6 @@
 package com.companeges.demo.dto;
 
-import java.lang.reflect.Member;
+import com.companeges.demo.models.Member;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
