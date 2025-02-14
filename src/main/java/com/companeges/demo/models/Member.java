@@ -28,7 +28,7 @@ public class Member {
 
     @ManyToOne
     @JoinColumn(name = "organization_id", nullable = false)
-    private List<Member> members;
+    private Organization organization;
 
     public Long getId() {
         return this.id;
@@ -40,10 +40,6 @@ public class Member {
 
     public List<Position> getPositions() {
         return this.positions;
-    }
-
-    public List<Member> getMembers() {
-        return this.members;
     }
 
 }
