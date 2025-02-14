@@ -23,6 +23,8 @@ public class OrganizationPostPutRequestDTO {
     @JsonProperty("positions")
     private List<Position> positions;
 
+    public OrganizationPostPutRequestDTO() {}
+
     public OrganizationPostPutRequestDTO(Organization organization) {
         this.id = organization.getId();
         this.name = organization.getName();

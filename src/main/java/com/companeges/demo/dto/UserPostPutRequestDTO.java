@@ -28,6 +28,8 @@ public class UserPostPutRequestDTO {
 
     @JsonProperty("organizations")
     private List<Organization> organizations;
+
+    public UserPostPutRequestDTO() {}
     
     public UserPostPutRequestDTO (User user) {
         this.id = user.getId();
