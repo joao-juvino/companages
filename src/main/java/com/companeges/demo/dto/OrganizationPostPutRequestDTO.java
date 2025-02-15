@@ -7,6 +7,13 @@ import com.companeges.demo.models.Organization;
 import com.companeges.demo.models.Position;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
 public class OrganizationPostPutRequestDTO {
     @JsonProperty("id")
     private Long id;
@@ -23,12 +30,10 @@ public class OrganizationPostPutRequestDTO {
     @JsonProperty("positions")
     private List<Position> positions;
 
-    public OrganizationPostPutRequestDTO() {}
-
     public OrganizationPostPutRequestDTO(Organization organization) {
         this.id = organization.getId();
         this.name = organization.getName();
-        this.userId = organization.getUserId();
+        this.userId = organization.getUser().getId();
         this.members = organization.getMembers();
         this.positions = organization.getPositions();
     }
