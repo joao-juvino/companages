@@ -1,46 +1,64 @@
 package com.companeges.demo.controllers;
 
+import com.companeges.demo.dto.MemberPostPutDTO;
+import com.companeges.demo.services.MemberService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-// import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-// import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-import com.companeges.demo.dto.MemberPostPutDTO;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-@WebMvcTest(MemberControllerTest.class)
+@ExtendWith(MockitoExtension.class)
 public class MemberControllerTest {
 
-    @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
-    @Test
-    public void testCreateMember() throws Exception {
-        // Arrange 
-        MemberPostPutDTO memberDTO = new MemberPostPutDTO(new Long(1), "Juvino");
+    @Mock
+    private MemberService memberService;
 
-        String requestJson = objectMapper.writeValueAsString(memberDTO);
+    @InjectMocks
+    private MemberController memberController;
 
-        mockMvc.perform(post("/members")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(requestJson))
-            .andExpect(status().isCreated())
-            .andExpect(jsonPath("$.id").isNumber())
-            .andExpect(jsonPath("$.name").value("juvino"));
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+        mockMvc = MockMvcBuilders.standaloneSetup(memberController).build();
     }
 
+    @Test
+    void testCreateMember() throws Exception {
+        // Simular retorno do serviço
+        MemberPostPutDTO memberDTO = new MemberPostPutDTO(1L, "teste", 1L);
+        Mockito.when(memberService.createMember(Mockito.any())).thenReturn(memberDTO);
+
+        String memberJson = """
+        {
+            "name": "teste",
+            "organizationId": 1
+        }
+        """;
+
+        mockMvc.perform(post("/members")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(memberJson))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.name").value("teste"))
+                .andExpect(jsonPath("$.organizationId").value(1));
+
+        // Verifica se o método foi chamado
+        Mockito.verify(memberService).createMember(Mockito.any());
+    }
 }
