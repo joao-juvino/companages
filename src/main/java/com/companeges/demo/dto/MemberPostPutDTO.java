@@ -24,11 +24,13 @@ public class MemberPostPutDTO {
     public MemberPostPutDTO (Member member) {
         this.id = member.getId();
         this.name = member.getName();
+        this.organizationId = member.getOrganization().getId();
     }
 
-    public MemberPostPutDTO (Long id, String name) {
+    public MemberPostPutDTO (Long id, String name, Long organizationId) {
         this.id = id;
         this.name = name;
+        this.organizationId = organizationId;
     }
 
 }
