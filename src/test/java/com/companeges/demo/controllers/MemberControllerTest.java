@@ -40,7 +40,6 @@ public class MemberControllerTest {
 
     @Test
     void testCreateMember() throws Exception {
-        // Simular retorno do serviço
         MemberPostPutDTO memberDTO = new MemberPostPutDTO(1L, "teste", 1L);
         Mockito.when(memberService.createMember(Mockito.any())).thenReturn(memberDTO);
 
@@ -58,7 +57,6 @@ public class MemberControllerTest {
                 .andExpect(jsonPath("$.name").value("teste"))
                 .andExpect(jsonPath("$.organizationId").value(1));
 
-        // Verifica se o método foi chamado
         Mockito.verify(memberService).createMember(Mockito.any());
     }
 }
