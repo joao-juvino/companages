@@ -8,3 +8,6 @@ clean:
 
 test:
 	mvn test
+
+help: 
+        echo "type 'make run' to run the current application"
