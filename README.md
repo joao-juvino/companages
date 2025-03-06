@@ -15,5 +15,20 @@ O projeto é composto por um backend robusto e um frontend dinâmico:
 ### Frontend  
 - **React.js** – Biblioteca para construção da interface  
 - **Tailwind CSS** – Estilização eficiente e responsiva
-- **React Router** – Navegação entre páginas  
+- **React Router** – Navegação entre páginas
 
+## Como executar o projeto 
+### Instalar as dependências 
+```
+make init
+```
+
+### Executar o projeto 
+```
+make run
+```
+
+### Executar os testes 
+```
+make test
+```
