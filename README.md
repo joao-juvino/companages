@@ -32,3 +32,9 @@ make run
 ```
 make test
 ```
+
+### Reunicuar o banco de dados 
+```
+docker compose down -v
+docker compose up -d
+```
