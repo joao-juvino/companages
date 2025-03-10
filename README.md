@@ -1,6 +1,6 @@
 # 🏢 Companages
 
-**Companages** é uma aplicação fullstack projetada para facilitar o gerenciamento de empresas. Com uma interface web intuitiva, permite criar empresas, gerenciar membros, cargos e suas alocações.
+**Companages** é uma aplicação fullstack projetada para facilitar o gerenciamento de empresas. Com uma interface web intuitiva e eficiente, permite criar empresas, gerenciar membros, cargos e suas alocações.
 
 ## 🚀 Tecnologias Utilizadas
 
