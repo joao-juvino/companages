@@ -3,7 +3,7 @@ run:
 	mvn spring-boot:run
 
 clean:
-	docker compose down
+	docker compose down -v
 	mvn clean
 
 test:
