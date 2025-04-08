@@ -10,7 +10,7 @@ O projeto é composto por um backend robusto e um frontend dinâmico:
 - **Spring Boot** – Framework para construção da API REST  
 - **PostgreSQL** – Banco de dados relacional  
 - **Docker** – Containerização para facilitar a execução  
-- **Spring Security** – Autenticação e autorização  
+- **Spring Security** – Autenticação e autorização jwt
 
 ### Frontend  
 - **React.js** – Biblioteca para construção da interface  
