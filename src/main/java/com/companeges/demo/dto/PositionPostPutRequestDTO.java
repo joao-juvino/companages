@@ -1,6 +1,5 @@
 package com.companeges.demo.dto;
 
-import com.companeges.demo.models.Organization;
 import com.companeges.demo.models.Position;
 import com.fasterxml.jackson.annotation.JsonProperty;
 

@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.ModelMap;
 
 import com.companeges.demo.dto.PositionPostPutRequestDTO;
 import com.companeges.demo.models.Position;

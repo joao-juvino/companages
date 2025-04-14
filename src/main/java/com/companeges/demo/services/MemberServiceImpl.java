@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import com.companeges.demo.dto.MemberPostPutDTO;
 import com.companeges.demo.models.Member;
-import com.companeges.demo.models.User;
 import com.companeges.demo.repositories.MemberRepository;
 
 @Service
