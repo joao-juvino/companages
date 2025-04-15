@@ -28,7 +28,7 @@ make init
 make run
 ```
 
-### Executar os testes 
+### Executar todos os testes 
 ```
 make test
 ```
