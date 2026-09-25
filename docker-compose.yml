@@ -1,14 +1,40 @@
 services:
-  companeges:  
-    image: bitnami/postgresql:latest
-    ports: 
-      - '5432:5432'
+  postgres:
+    image: postgres:17-alpine
     environment:
-      - POSTGRES_USER=juvino
-      - POSTGRES_PASSWORD=juvino123
-      - POSTGRES_DB=companeges
+      POSTGRES_DB: ${POSTGRES_DB:-companages}
+      POSTGRES_USER: ${POSTGRES_USER:-companages}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
     volumes:
-      - companeges_pg_data:/bitnami/postgresql
-
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+  backend:
+    build: .
+    environment:
+      DATABASE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-companages}
+      POSTGRES_USER: ${POSTGRES_USER:-companages}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+      JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET in .env}
+      JWT_EXPIRATION: ${JWT_EXPIRATION:-86400000}
+      CORS_ALLOWED_ORIGIN: http://localhost:4200
+    ports: ["8080:8080"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8080/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+  frontend:
+    build: ./frontend
+    ports: ["4200:80"]
+    depends_on:
+      backend:
+        condition: service_healthy
 volumes:
-  companeges_pg_data:
+  postgres_data:

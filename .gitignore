@@ -1,5 +1,10 @@
 HELP.md
 target/
+.m2/
+.env
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
