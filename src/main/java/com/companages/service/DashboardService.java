@@ -1,0 +1,5 @@
+package com.companages.service;
+import com.companages.dto.DashboardResponse; import com.companages.repository.*; import org.springframework.stereotype.Service; import org.springframework.transaction.annotation.Transactional;
+@Service public class DashboardService { private final CurrentUserService current; private final OrganizationRepository organizations; private final MemberRepository members; private final PositionRepository positions; private final AssignmentRepository assignments; public DashboardService(CurrentUserService c,OrganizationRepository o,MemberRepository m,PositionRepository p,AssignmentRepository a){current=c;organizations=o;members=m;positions=p;assignments=a;}
+ @Transactional(readOnly=true) public DashboardResponse get(){Long id=current.get().getId();return new DashboardResponse(organizations.countByOwnerId(id),members.countByOrganizationOwnerId(id),positions.countByOrganizationOwnerId(id),assignments.countByOrganizationOwnerId(id),members.findTop5ByOrganizationOwnerIdOrderByCreatedAtDesc(id).stream().map(Mappers::member).toList());}
+}

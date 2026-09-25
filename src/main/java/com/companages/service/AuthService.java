@@ -1,0 +1,8 @@
+package com.companages.service;
+import com.companages.dto.AuthDtos.*; import com.companages.entity.User; import com.companages.exception.EmailAlreadyExistsException; import com.companages.repository.UserRepository; import com.companages.security.JwtService; import org.springframework.security.authentication.*; import org.springframework.security.crypto.password.PasswordEncoder; import org.springframework.stereotype.Service; import org.springframework.transaction.annotation.Transactional;
+@Service public class AuthService { private final UserRepository users; private final PasswordEncoder encoder; private final AuthenticationManager authentication; private final JwtService jwt; private final CurrentUserService current;
+ public AuthService(UserRepository u,PasswordEncoder e,AuthenticationManager a,JwtService j,CurrentUserService c){users=u;encoder=e;authentication=a;jwt=j;current=c;}
+ @Transactional public AuthResponse register(RegisterRequest r){String email=r.email().trim().toLowerCase();if(users.existsByEmailIgnoreCase(email))throw new EmailAlreadyExistsException();User u=new User();u.setName(r.name().trim());u.setEmail(email);u.setPassword(encoder.encode(r.password()));u=users.save(u);return new AuthResponse(jwt.generate(u.getEmail()),Mappers.user(u));}
+ public AuthResponse login(LoginRequest r){authentication.authenticate(new UsernamePasswordAuthenticationToken(r.email(),r.password()));User u=users.findByEmailIgnoreCase(r.email()).orElseThrow();return new AuthResponse(jwt.generate(u.getEmail()),Mappers.user(u));}
+ public UserResponse me(){return Mappers.user(current.get());}
+}
