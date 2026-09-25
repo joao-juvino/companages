@@ -1,0 +1,1 @@
+import { Component,inject } from '@angular/core'; import { ToastService } from '../core/toast.service'; @Component({selector:'app-toast',template:'@if(toast.message()){<div class="toast">{{toast.message()}}</div>}'}) export class ToastComponent{toast=inject(ToastService);}

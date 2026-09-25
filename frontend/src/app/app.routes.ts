@@ -1,0 +1,11 @@
+import { Routes } from '@angular/router'; import { authGuard } from './core/auth.guard';
+export const routes: Routes = [
+ {path:'login',loadComponent:()=>import('./features/auth/login.component').then(m=>m.LoginComponent)},
+ {path:'register',loadComponent:()=>import('./features/auth/register.component').then(m=>m.RegisterComponent)},
+ {path:'',canActivate:[authGuard],loadComponent:()=>import('./layout/shell.component').then(m=>m.ShellComponent),children:[
+  {path:'dashboard',loadComponent:()=>import('./features/dashboard/dashboard.component').then(m=>m.DashboardComponent)},
+  {path:'organizations',loadComponent:()=>import('./features/organizations/organizations.component').then(m=>m.OrganizationsComponent)},
+  {path:'organizations/:id',loadComponent:()=>import('./features/organizations/organization-detail.component').then(m=>m.OrganizationDetailComponent)},
+  {path:'',pathMatch:'full',redirectTo:'dashboard'}]},
+ {path:'**',redirectTo:''}
+];
