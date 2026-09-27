@@ -1,0 +1,2 @@
+package com.companages.dto; import com.companages.entity.*; import jakarta.validation.constraints.*; import java.time.Instant;
+public final class InvitationDtos{private InvitationDtos(){} public record InviteRequest(@NotBlank @Email String email,@NotNull AccessRole role){} public record Response(Long id,Long organizationId,String organizationName,String email,AccessRole role,InvitationStatus status,Instant expiresAt,Instant acceptedAt,Instant createdAt){} public record AcceptRequest(@NotBlank String token){} }

@@ -1,0 +1,3 @@
+package com.companages.security;
+import org.springframework.stereotype.Service; import java.nio.charset.StandardCharsets; import java.security.*; import java.util.*;
+@Service public class OpaqueTokenService { private final SecureRandom random=new SecureRandom(); public String create(){byte[] bytes=new byte[48];random.nextBytes(bytes);return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);} public String hash(String token){try{return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(token.getBytes(StandardCharsets.UTF_8)));}catch(NoSuchAlgorithmException e){throw new IllegalStateException(e);}} }

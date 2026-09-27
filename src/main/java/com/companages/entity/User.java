@@ -9,11 +9,15 @@ public class User {
     @Column(nullable=false, length=100) private String name;
     @Column(nullable=false, unique=true) private String email;
     @Column(nullable=false) private String password;
+    @Column(length=500) private String avatarUrl;
+    @Column(length=40) private String phone;
+    @Column(length=1000) private String bio;
     @Column(nullable=false, updatable=false) private Instant createdAt;
     @Column(nullable=false) private Instant updatedAt;
     @PrePersist void create(){ createdAt=updatedAt=Instant.now(); }
     @PreUpdate void update(){ updatedAt=Instant.now(); }
     public Long getId(){return id;} public String getName(){return name;} public void setName(String v){name=v;}
     public String getEmail(){return email;} public void setEmail(String v){email=v;} public String getPassword(){return password;} public void setPassword(String v){password=v;}
+    public String getAvatarUrl(){return avatarUrl;} public void setAvatarUrl(String v){avatarUrl=v;} public String getPhone(){return phone;} public void setPhone(String v){phone=v;} public String getBio(){return bio;} public void setBio(String v){bio=v;}
     public Instant getCreatedAt(){return createdAt;} public Instant getUpdatedAt(){return updatedAt;}
 }

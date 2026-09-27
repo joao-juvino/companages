@@ -7,8 +7,14 @@ spring:
     hibernate.ddl-auto: create-drop
     open-in-view: false
   flyway.enabled: false
+  mail:
+    host: localhost
+    port: 1025
 app:
   jwt:
     secret: test-secret-key-that-is-at-least-32-bytes-long
     expiration-ms: 3600000
+    refresh-expiration-ms: 2592000000
   cors.allowed-origin: http://localhost:4200
+  frontend-url: http://localhost:4200
+  mail-from: test@companages.local

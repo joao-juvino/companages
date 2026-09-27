@@ -1,0 +1,6 @@
+package com.companages.entity;
+import jakarta.persistence.*; import java.time.Instant;
+@Entity @Table(name="activity_logs") public class ActivityLog {
+ @Id @GeneratedValue(strategy=GenerationType.IDENTITY) private Long id; @ManyToOne(fetch=FetchType.LAZY,optional=false) private Organization organization; @ManyToOne(fetch=FetchType.LAZY) @JoinColumn(name="actor_id") private User actor; @Enumerated(EnumType.STRING) @Column(nullable=false) private ActivityAction action; private String targetType; private String targetId; @Column(columnDefinition="TEXT") private String metadata; @Column(nullable=false,updatable=false) private Instant createdAt; @PrePersist void create(){createdAt=Instant.now();}
+ public Long getId(){return id;} public Organization getOrganization(){return organization;} public void setOrganization(Organization v){organization=v;} public User getActor(){return actor;} public void setActor(User v){actor=v;} public ActivityAction getAction(){return action;} public void setAction(ActivityAction v){action=v;} public String getTargetType(){return targetType;} public void setTargetType(String v){targetType=v;} public String getTargetId(){return targetId;} public void setTargetId(String v){targetId=v;} public String getMetadata(){return metadata;} public void setMetadata(String v){metadata=v;} public Instant getCreatedAt(){return createdAt;}
+}
