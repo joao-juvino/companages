@@ -1,189 +1,124 @@
 # Companages
 
-Companages é uma aplicação fullstack para organizar empresas e equipes. Cada usuário possui workspaces privados onde gerencia organizações, membros, cargos e as associações entre pessoas e responsabilidades.
+Companages é uma aplicação SaaS multi-tenant para organizar empresas, equipes, pessoas, cargos e linhas de reporte em um único workspace.
 
-## Funcionalidades
+## O que está incluído
 
-- Cadastro e login com JWT e senhas BCrypt
-- Dashboard com indicadores e membros recentes
-- CRUD completo de organizações, membros e cargos
-- Associação de membros a cargos
-- Isolamento de dados por proprietário em todos os recursos
-- Validação de formulários, feedback de ações e estados de loading, erro e vazio
-- Interface responsiva em estilo SaaS
-- API documentada com OpenAPI/Swagger
+- Autenticação com JWT, refresh token rotativo, logout e recuperação/troca de senha.
+- Multi-tenancy por membership com papéis `OWNER`, `ADMIN`, `MANAGER` e `MEMBER`.
+- Organizações com perfil completo, arquivamento e restauração.
+- Membros com busca, filtros, equipe, cargo, gestor, status e perfil profissional.
+- Equipes, cargos e organograma com proteção contra ciclos de hierarquia.
+- Convites por email com expiração, reenvio, cancelamento e aceite.
+- Dashboard por organização, auditoria de atividades e notificações persistidas.
+- Interface Angular responsiva com seletor de organização, estados vazios e feedback de ações.
+- API OpenAPI/Swagger, migrações Flyway, Docker Compose e dados demo opcionais.
 
 ## Stack
 
 | Camada | Tecnologias |
 | --- | --- |
-| Frontend | Angular 22, TypeScript strict, Router, Reactive Forms, HttpClient, Signals/RxJS, SCSS |
-| Backend | Java 17, Spring Boot 3, Spring Web, Data JPA, Security, Validation, JWT |
-| Banco | PostgreSQL 17, Flyway |
-| Infraestrutura | Docker, Docker Compose, Nginx |
-| Testes | JUnit, Spring Boot Test, MockMvc, H2, Vitest |
+| Frontend | Angular 22, TypeScript strict, Signals/RxJS, SCSS |
+| Backend | Java 17, Spring Boot 3, Spring Security, Data JPA, Validation |
+| Dados | PostgreSQL 17, Flyway |
+| Desenvolvimento | Docker Compose, Nginx, Mailpit |
+| Testes | JUnit, MockMvc, H2, Vitest |
 
-## Arquitetura
+## Início rápido
 
-```text
-Angular / Nginx (:4200)
-        │ /api
-        ▼
-Spring Boot REST API (:8080)
-        │ JPA + Flyway
-        ▼
-PostgreSQL
-```
-
-O backend é um monólito modular simples. Controllers tratam HTTP, services concentram regras de negócio e ownership, repositories restringem consultas ao usuário autenticado e DTOs separam a API das entidades JPA.
-
-## Modelo de domínio
-
-```text
-User 1 ── * Organization
-Organization 1 ── * Member
-Organization 1 ── * Position
-Organization 1 ── * Assignment
-Assignment * ── 1 Member
-Assignment * ── 1 Position
-```
-
-Uma associação só pode combinar membro e cargo da mesma organização. Exclusões em cascata mantêm o domínio consistente.
-
-## Executando com Docker
-
-Pré-requisitos: Docker Desktop com Docker Compose.
-
-```bash
-cp .env.example .env
-docker compose up --build
-```
-
-No PowerShell:
+Requer Docker Desktop com Docker Compose.
 
 ```powershell
 Copy-Item .env.example .env
 docker compose up --build
 ```
 
-Troque `POSTGRES_PASSWORD` e `JWT_SECRET` no `.env` antes de ambientes compartilhados.
+Abra:
 
 | Serviço | URL |
 | --- | --- |
 | Aplicação | http://localhost:4200 |
 | API | http://localhost:8080/api |
-| Swagger UI | http://localhost:8080/swagger-ui.html |
+| Swagger | http://localhost:8080/swagger-ui.html |
+| Emails locais | http://localhost:8025 |
 | Health check | http://localhost:8080/actuator/health |
 
-Para encerrar:
+Para encerrar, execute `docker compose down`. Use `docker compose down -v` somente quando quiser apagar também o banco local.
 
-```bash
-docker compose down
-```
+## Dados de demonstração
 
-Use `docker compose down -v` apenas se também quiser apagar os dados locais do PostgreSQL.
+Defina `DEMO_DATA=true` no `.env` antes de subir os contêineres. A aplicação criará uma organização com equipes, cargos e hierarquia:
 
-## Execução separada
+- Email: `demo@companages.local`
+- Senha: `demo12345`
 
-Backend (com PostgreSQL disponível e variáveis configuradas):
+O seed é idempotente, opcional e desativado por padrão.
 
-```bash
-./mvnw spring-boot:run
-```
+## Execução sem Docker
 
-No Windows: `mvnw.cmd spring-boot:run` ou `mvn spring-boot:run`.
+Configure um PostgreSQL e as variáveis de ambiente; depois:
 
-Frontend:
-
-```bash
+```powershell
+mvn spring-boot:run
 cd frontend
 npm ci
 npm start
 ```
 
-O servidor de desenvolvimento usa `proxy.conf.json`, portanto o frontend continua consumindo apenas `/api`.
+O frontend de desenvolvimento usa proxy para `/api`. Para inspecionar emails, mantenha um SMTP local na porta `1025` ou configure `MAIL_HOST` e `MAIL_PORT`.
 
-## Variáveis de ambiente
+## Envio real com EmailJS
 
-| Variável | Descrição |
+O Mailpit continua sendo o padrão local. Para enviar convites e recuperação de senha para endereços reais, crie no EmailJS um template transacional com:
+
+- **To Email:** `{{to_email}}`
+- **Subject:** `{{subject}}`
+- **Body:** use `{{message}}` e um botão ou link apontando para `{{link}}`
+
+Depois preencha no `.env`:
+
+```dotenv
+MAIL_PROVIDER=emailjs
+EMAILJS_SERVICE_ID=service_xxxxxxx
+EMAILJS_TEMPLATE_ID=template_xxxxxxx
+EMAILJS_PUBLIC_KEY=xxxxxxxxxxxxxxx
+EMAILJS_PRIVATE_KEY=xxxxxxxxxxxxxxx
+```
+
+A chave privada é opcional no protocolo do EmailJS, mas é recomendada porque o envio é feito pelo backend. No painel do EmailJS, habilite requisições de API fora do navegador quando essa proteção estiver ativa. Reinicie o backend após alterar o `.env`.
+
+## Configuração
+
+| Variável | Uso |
 | --- | --- |
-| `POSTGRES_DB` | Nome do banco |
-| `POSTGRES_USER` | Usuário do PostgreSQL |
-| `POSTGRES_PASSWORD` | Senha do PostgreSQL |
-| `DATABASE_URL` | URL JDBC usada fora do Compose |
-| `JWT_SECRET` | Chave de assinatura (mínimo de 32 caracteres) |
-| `JWT_EXPIRATION` | Validade do token em milissegundos |
-| `CORS_ALLOWED_ORIGIN` | Origem permitida para o frontend |
+| `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD` | Banco PostgreSQL |
+| `DATABASE_URL` | URL JDBC fora do Compose |
+| `JWT_SECRET` | Assinatura JWT; use um segredo longo e aleatório |
+| `JWT_EXPIRATION` | Duração do access token em ms |
+| `REFRESH_TOKEN_EXPIRATION` | Duração do refresh token em ms |
+| `FRONTEND_URL`, `CORS_ALLOWED_ORIGIN` | URLs públicas do frontend |
+| `MAIL_HOST`, `MAIL_PORT`, `MAIL_FROM` | SMTP |
+| `MAIL_PROVIDER` | `smtp` para Mailpit/SMTP ou `emailjs` para envio real |
+| `EMAILJS_SERVICE_ID`, `EMAILJS_TEMPLATE_ID`, `EMAILJS_PUBLIC_KEY`, `EMAILJS_PRIVATE_KEY` | Integração opcional com EmailJS |
+| `DEMO_DATA` | Ativa o seed local opcional |
 
-O repositório contém somente valores locais de fallback e placeholders, nunca credenciais reais.
+Nunca grave segredos reais no repositório.
 
-## Testes e build
+## Validação
 
-```bash
-# Backend
-./mvnw verify
-
-# Frontend
+```powershell
+mvn verify
 cd frontend
 npm test -- --watch=false
 npm run build
 ```
 
-## API principal
+## Documentação
 
-### Autenticação
-
-- `POST /api/auth/register`
-- `POST /api/auth/login`
-- `GET /api/auth/me`
-
-### Organizações
-
-- `POST /api/organizations`
-- `GET /api/organizations`
-- `GET|PUT|DELETE /api/organizations/{id}`
-
-### Membros e cargos
-
-- `POST|GET /api/organizations/{organizationId}/members`
-- `GET|PUT|DELETE /api/organizations/{organizationId}/members/{memberId}`
-- `POST|GET /api/organizations/{organizationId}/positions`
-- `GET|PUT|DELETE /api/organizations/{organizationId}/positions/{positionId}`
-
-### Associações e dashboard
-
-- `POST|GET /api/organizations/{organizationId}/assignments`
-- `DELETE /api/organizations/{organizationId}/assignments/{assignmentId}`
-- `GET /api/dashboard`
-
-## Segurança
-
-- Senhas são persistidas exclusivamente como hashes BCrypt.
-- O JWT é enviado como `Authorization: Bearer <token>`.
-- Todas as rotas de negócio exigem autenticação.
-- O ID do proprietário nunca é aceito do cliente; ele vem do usuário autenticado.
-- Buscas de organizações são filtradas por `id + ownerId`, e recursos filhos só são resolvidos depois da validação de ownership.
-- Erros têm formato consistente e não expõem stack traces.
-
-## Estrutura
-
-```text
-.
-├── src/main/java/com/companages
-│   ├── config, controller, dto, entity
-│   ├── exception, repository, security, service
-├── src/main/resources/db/migration
-├── src/test
-├── frontend/src/app
-│   ├── core, features, layout, shared
-├── Dockerfile
-├── docker-compose.yml
-└── .github/workflows/ci.yml
-```
-
-## Dados de demonstração
-
-Não há credenciais ou dados fake obrigatórios. Registre um usuário pela tela inicial; o fluxo completo fica disponível imediatamente.
+- [Plano de evolução](PROJECT_PLAN.md)
+- [Arquitetura](docs/architecture.md)
+- [Modelo de dados](docs/database.md)
+- [Guia da API](docs/api.md)
 
 ## Licença
 

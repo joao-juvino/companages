@@ -21,10 +21,21 @@ services:
       JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET in .env}
       JWT_EXPIRATION: ${JWT_EXPIRATION:-86400000}
       CORS_ALLOWED_ORIGIN: http://localhost:4200
+      FRONTEND_URL: http://localhost:4200
+      MAIL_HOST: mailpit
+      MAIL_PORT: 1025
+      MAIL_PROVIDER: ${MAIL_PROVIDER:-smtp}
+      EMAILJS_SERVICE_ID: ${EMAILJS_SERVICE_ID:-}
+      EMAILJS_TEMPLATE_ID: ${EMAILJS_TEMPLATE_ID:-}
+      EMAILJS_PUBLIC_KEY: ${EMAILJS_PUBLIC_KEY:-}
+      EMAILJS_PRIVATE_KEY: ${EMAILJS_PRIVATE_KEY:-}
+      DEMO_DATA: ${DEMO_DATA:-false}
     ports: ["8080:8080"]
     depends_on:
       postgres:
         condition: service_healthy
+      mailpit:
+        condition: service_started
     healthcheck:
       test: ["CMD", "curl", "-fsS", "http://localhost:8080/actuator/health"]
       interval: 10s
@@ -36,5 +47,10 @@ services:
     depends_on:
       backend:
         condition: service_healthy
+  mailpit:
+    image: axllent/mailpit:latest
+    ports:
+      - "8025:8025"
+    restart: unless-stopped
 volumes:
   postgres_data:
